@@ -9,13 +9,13 @@ import glob
 
 def main():
     # Change the directory 
-    path = glob.glob(r'C:\Users\Mark Anthony Mamauag\Desktop\School Files\Programming\1st Term (2021-2022)\CS124\images\*.jpg')
+    path = ["asdf"]
     detectCurrency(path)
 
 def detectCurrency(path_var):
     pixelsPerMetric = None
     for file in path_var:
-        image = cv2.imread(file)
+        image = cv2.imread("currencies/test-3.jpg")
 
         # FOR CURRENCY DETECTION
         resized = imutils.resize(image, width=300)
@@ -54,7 +54,7 @@ def detectCurrency(path_var):
                         0.5, (255, 255, 255), 2)
 
             # FOR COIN TYPE DETECTION
-            if cv2.contourArea(c) < 100:
+            if cv2.contourArea(c) < 50 or shape == "bill":
                 continue
             orig = image.copy()
             box = cv2.minAreaRect(c)
