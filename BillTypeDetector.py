@@ -38,10 +38,10 @@ def get_area_of_interest(bill):
     bill = cv2.normalize(bill, bill, 0, 215, cv2.NORM_MINMAX)
     bill = cv2.cvtColor(bill, cv2.COLOR_BGR2GRAY)
 
-    h_start = int(height * .78)
-    h_end = int(height * .98)
-    w_start = int(width * .87)
-    w_end = int(width * .98)
+    h_start = int(height * .80)
+    h_end = int(height * .97)
+    w_start = int(width * .80)
+    w_end = int(width * .97)
     crop_img = bill[h_start:h_end, w_start:w_end].copy()
 
     # resize image for clearer recognition
@@ -61,17 +61,18 @@ def apply_preprocess(bill):
     median_img = cv2.medianBlur(gauss_img, 7)
 
     # Apply binary thresholding
-    thresh = cv2.adaptiveThreshold(median_img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 21, 6)
+    thresh = cv2.adaptiveThreshold(median_img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 19, 6)
 
     # Dilate the image
     kernel = np.ones((3, 3), np.uint8)
-    img_dilation = cv2.dilate(thresh, kernel, iterations=2)
+    img_dilation = cv2.dilate(thresh, kernel, iterations=1)
 
     return img_dilation
 
 
 def process_ocr(img):
     custom_config = f'--psm 13 outputbase digits -l eng'
-    data = pytesseract.image_to_string(img, config=custom_config, lang='eng')
-    string = ''.join([char for char in data[:-2 or None]])
+    data = pytesseract.image_to_string(img, config=custom_config)
+    string = ''.join([char for char in data if char.isdigit()])
+    
     return string

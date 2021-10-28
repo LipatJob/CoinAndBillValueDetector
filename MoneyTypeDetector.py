@@ -33,8 +33,8 @@ def apply_preprocess(image):
 
 def apply_contour(image):
     thresh = cv2.threshold(image, 60, 255, cv2.THRESH_BINARY)[1]
-    cv2.imshow("", thresh)
-    cv2.waitKey()
+    # cv2.imshow("", thresh)
+    # cv2.waitKey()
     cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     (cnts, _) = contours.sort_contours(cnts)

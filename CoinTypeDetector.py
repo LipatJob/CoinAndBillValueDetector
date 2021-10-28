@@ -1,7 +1,10 @@
 from scipy.spatial import distance as dist
 
 
-def count_coin_denominator(image, coins, pixel_per_metric):
+def count_coin_denominator(image, coins):
+    if len(coins) == 0: return {}
+    
+    pixel_per_metric = get_pixel_per_metric(coins[0]) 
     coin_types = [check_coin_type(coin, pixel_per_metric) for coin in coins]
     return {coin: coin_types.count(coin) for coin in set(coin_types)}
 
