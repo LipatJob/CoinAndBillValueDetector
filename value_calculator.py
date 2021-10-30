@@ -54,7 +54,7 @@ def check_type(cnt):
         shape = 'bill'
     else:
         shape = 'coin'
-    print(shape)
+
     return shape
 
 
@@ -65,7 +65,9 @@ def get_contours(image):
     cnts = imutils.grab_contours(cnts)
     (cnts, _) = contours.sort_contours(cnts)
 
-    cnts = [cnt for cnt in cnts if cv2.contourArea(cnt) > 110]
+    area = image.shape[0] * image.shape[1] 
+
+    cnts = [cnt for cnt in cnts if cv2.contourArea(cnt) > area * .005]
     return cnts
 
 

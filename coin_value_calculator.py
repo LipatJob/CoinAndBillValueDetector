@@ -6,8 +6,9 @@ def get_coin_value(box, pixel_per_metric):
 
     coin_type = "-1"
     dimensions = [("1", 23), ("5", 25), ("10", 27)]
+    epsilon = 1.5
     for current_type, size in dimensions:
-        if size - 1.9 < diameter < size + 1.9:
+        if size - epsilon < diameter < size + epsilon:
             coin_type = current_type
             break
 

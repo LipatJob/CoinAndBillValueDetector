@@ -6,7 +6,7 @@ import pytesseract
 def get_bill_value(bill_image):
     area_of_interest = get_area_of_interest(bill_image)
     area_of_interest = apply_preprocess(area_of_interest)
-    return process_ocr(area_of_interest)
+    return read_bill_value(area_of_interest)
 
 
 def apply_preprocess(bill):
@@ -41,21 +41,21 @@ def get_area_of_interest(bill):
     crop_img = bill[h_start:h_end, w_start:w_end].copy()
 
     # resize image for clearer recognition
-    scale_percent = 400
-    width = int(crop_img.shape[1] * scale_percent / 100)
-    height = int(crop_img.shape[0] * scale_percent / 100)
+    scale = 200
+    ratio = crop_img.shape[0]/crop_img.shape[1]
+    width = int(scale)
+    height = int(scale * ratio)
     dim = (width, height)
     resized = cv2.resize(crop_img, dim, interpolation=cv2.INTER_AREA)
 
     return resized
 
 
-def process_ocr(img):
+def read_bill_value(img):
     # if tesseract is not in PATH variable, use this
     # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
     custom_config = f'--psm 13 outputbase digits -l eng'
     data = pytesseract.image_to_string(img, config=custom_config)
     string = ''.join([char for char in data if char.isdigit()])
-
-    return string
+    return int(string) if string != "" else 0
