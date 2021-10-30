@@ -8,11 +8,9 @@ def get_bill_value(bill_image):
     area_of_interest = apply_preprocess(area_of_interest)
     return process_ocr(area_of_interest)
 
-# if tesseract is not in PATH variable, use this
-# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
 
 def apply_preprocess(bill):
+
     # Apply Gaussian Blur and Median Blur
     gauss_img = cv2.GaussianBlur(bill, (11, 11), 0)
     median_img = cv2.medianBlur(gauss_img, 7)
@@ -53,6 +51,9 @@ def get_area_of_interest(bill):
 
 
 def process_ocr(img):
+    # if tesseract is not in PATH variable, use this
+    # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
     custom_config = f'--psm 13 outputbase digits -l eng'
     data = pytesseract.image_to_string(img, config=custom_config)
     string = ''.join([char for char in data if char.isdigit()])
