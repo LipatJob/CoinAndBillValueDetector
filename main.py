@@ -5,15 +5,9 @@ import numpy as np
 
 
 def main():
-    img = cv2.imread("dataset/rotated_bills.png")
-    img = apply_preprocess(img)
-    original_img = img.copy()
-
-    values = get_values(img)
-
-    display_values(values, original_img)
-
-    print(calculate_total(values))
+    IMAGE_LOCATION = "dataset/rotated_bills.png"
+    
+    get_value_from_image(IMAGE_LOCATION)
 
 
 def get_value_from_image(image_location):
@@ -25,20 +19,19 @@ def get_value_from_image(image_location):
 
     display_values(values, original_img)
 
-
     return calculate_total(values)
     
 
 def display_values(values, image):
     for value in values:
-        pprint.pprint(value)
         box = np.int0(value["location"])
 
         cv2.drawContours(image,[box],0,(0,0,255),2)
         type_point = max(box, key=lambda point:point[1]).copy()
-        type_point[1] += 20
-        value_point = max(box, key=lambda point:point[1]).copy()
-        value_point[1] += 60
+        value_point = type_point.copy()
+
+        type_point[1] += 30
+        value_point[1] += 70
         cv2.putText(image, value["type"], type_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv2.putText(image, str(value["value"]) + " PHP", value_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 

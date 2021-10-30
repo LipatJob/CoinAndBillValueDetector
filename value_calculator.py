@@ -18,6 +18,9 @@ def get_values(image):
 
     values = []
     for money_type, item, box in zip(money_types, items, boxes):
+        cv2.imshow("", item)
+        cv2.waitKey()
+
         if money_type == "coin":
             if pixel_per_metric == None:
                 pixel_per_metric = get_pixel_per_metric(box)
@@ -31,9 +34,6 @@ def get_values(image):
             "location": tuple(map(tuple, box))
         })
 
-        cv2.imshow("", item)
-        cv2.waitKey()
-    
     return values
 
 
@@ -65,7 +65,7 @@ def get_contours(image):
     cnts = imutils.grab_contours(cnts)
     (cnts, _) = contours.sort_contours(cnts)
 
-    area = image.shape[0] * image.shape[1] 
+    area = image.shape[0] * image.shape[1]
 
     cnts = [cnt for cnt in cnts if cv2.contourArea(cnt) > area * .005]
     return cnts
@@ -106,8 +106,3 @@ def get_rotated_objects(image, min_area_rects):
         rotated_images.append(warped)
 
     return rotated_images
-
-
-
-
-
