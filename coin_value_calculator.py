@@ -1,18 +1,20 @@
 from scipy.spatial import distance as dist
+import cv2
 
 
-def get_coin_value(box, pixel_per_metric):
+def get_coin_value(box, pixel_per_metric, image):
     diameter = get_diameter(box, pixel_per_metric)
 
-    coin_type = "-1"
+    coin_value = "-1"
     dimensions = [("1", 23), ("5", 25), ("10", 27)]
     epsilon = 1.5
     for current_type, size in dimensions:
         if size - epsilon < diameter < size + epsilon:
-            coin_type = current_type
+            coin_value = current_type
             break
 
-    return coin_type
+    show_coin(image, coin_value, diameter)
+    return coin_value
 
 
 def get_diameter(cnt, pixel_per_metric):
@@ -42,3 +44,22 @@ def get_pixel_per_metric(box):
     dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
 
     return dB / 23
+
+
+def show_coin(image, amount, diameter):
+    image = image.copy()
+    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+
+    factor = 300
+    ratio = image.shape[1] / image.shape[0]
+    width = int(factor)
+    height = int(factor * ratio)
+
+    image = cv2.resize(image, (height, width))
+    cv2.putText(image, f"Diameter: {diameter:.2f}", (0, 50),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    cv2.putText(image, f"Amount: {amount}", (0, 100),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+    cv2.imshow("", image)
+    cv2.waitKey()

@@ -24,7 +24,7 @@ def get_values(image):
         if money_type == "coin":
             if pixel_per_metric == None:
                 pixel_per_metric = get_pixel_per_metric(box)
-            value = get_coin_value(box, pixel_per_metric)
+            value = get_coin_value(box, pixel_per_metric, item)
         elif money_type == "bill":
             value = get_bill_value(item)
 
@@ -35,27 +35,6 @@ def get_values(image):
         })
 
     return values
-
-
-def get_boxes(min_areas):
-    return [cv2.boxPoints(min_area) for min_area in min_areas]
-
-
-def get_types_money(cnts):
-    return [check_type(cnt) for cnt in cnts]
-
-
-def check_type(cnt):
-    shape = 'null'
-    peri = cv2.arcLength(cnt, True)
-    approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
-
-    if len(approx) == 4:
-        shape = 'bill'
-    else:
-        shape = 'coin'
-
-    return shape
 
 
 def get_contours(image):
@@ -71,8 +50,16 @@ def get_contours(image):
     return cnts
 
 
+def get_types_money(cnts):
+    return [check_type(cnt) for cnt in cnts]
+
+
 def get_min_area_rect(cnts):
     return [cv2.minAreaRect(contour) for contour in cnts]
+
+
+def get_boxes(min_areas):
+    return [cv2.boxPoints(min_area) for min_area in min_areas]
 
 
 def get_rotated_objects(image, min_area_rects):
@@ -106,3 +93,16 @@ def get_rotated_objects(image, min_area_rects):
         rotated_images.append(warped)
 
     return rotated_images
+
+
+def check_type(cnt):
+    shape = 'null'
+    peri = cv2.arcLength(cnt, True)
+    approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
+
+    if len(approx) == 4:
+        shape = 'bill'
+    else:
+        shape = 'coin'
+
+    return shape

@@ -6,7 +6,11 @@ import pytesseract
 def get_bill_value(bill_image):
     area_of_interest = get_area_of_interest(bill_image)
     area_of_interest = apply_preprocess(area_of_interest)
-    return read_bill_value(area_of_interest)
+    value  = read_bill_value(area_of_interest)
+
+    show_bill(area_of_interest, value)
+
+    return value
 
 
 def apply_preprocess(bill):
@@ -23,8 +27,6 @@ def apply_preprocess(bill):
     kernel = np.ones((3, 3), np.uint8)
     img_dilation = cv2.dilate(thresh, kernel, iterations=1)
 
-    cv2.imshow("", img_dilation)
-    cv2.waitKey()
 
     return img_dilation
 
@@ -59,3 +61,19 @@ def read_bill_value(img):
     data = pytesseract.image_to_string(img, config=custom_config)
     string = ''.join([char for char in data if char.isdigit()])
     return int(string) if string != "" else 0
+
+def show_bill(image, value):
+    image = image.copy()
+    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+
+    factor = 150
+    ratio = image.shape[1] / image.shape[0]
+    width = int(factor)
+    height = int(factor * ratio)
+
+    image = cv2.resize(image, (height, width))
+    cv2.putText(image, f"Value: {value}", (0, 50),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+    cv2.imshow("", image)
+    cv2.waitKey()
