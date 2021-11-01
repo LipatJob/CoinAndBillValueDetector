@@ -9,9 +9,9 @@ from coin_value_calculator import get_coin_value, get_pixel_per_metric
 
 def get_values(image):
     cnts = get_contours(image)
-    money_types = get_types_money(cnts)
-    min_areas = get_min_area_rect(cnts)
-    boxes = get_boxes(min_areas)
+    money_types = [check_type(cnt) for cnt in cnts]
+    min_areas = [cv2.minAreaRect(contour) for contour in cnts]
+    boxes = [cv2.boxPoints(min_area) for min_area in min_areas]
     items = get_rotated_objects(image, min_areas)
 
     pixel_per_metric = None
@@ -21,13 +21,16 @@ def get_values(image):
         cv2.imshow("", item)
         cv2.waitKey()
 
+        # process coins
         if money_type == "coin":
-            if pixel_per_metric == None:
-                pixel_per_metric = get_pixel_per_metric(box)
+            if pixel_per_metric == None: pixel_per_metric = get_pixel_per_metric(box)
             value = get_coin_value(box, pixel_per_metric, item)
+
+        # process bills
         elif money_type == "bill":
             value = get_bill_value(item)
 
+        # add value to list
         values.append({
             "type": money_type,
             "value": value,
@@ -40,26 +43,17 @@ def get_values(image):
 def get_contours(image):
     image = image.copy()
     thresh = cv2.threshold(image, 60, 255, cv2.THRESH_BINARY)[1]
+
+    # get contours
     cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     (cnts, _) = contours.sort_contours(cnts)
 
+    # filter contours that are too small
     area = image.shape[0] * image.shape[1]
-
     cnts = [cnt for cnt in cnts if cv2.contourArea(cnt) > area * .005]
+    
     return cnts
-
-
-def get_types_money(cnts):
-    return [check_type(cnt) for cnt in cnts]
-
-
-def get_min_area_rect(cnts):
-    return [cv2.minAreaRect(contour) for contour in cnts]
-
-
-def get_boxes(min_areas):
-    return [cv2.boxPoints(min_area) for min_area in min_areas]
 
 
 def get_rotated_objects(image, min_area_rects):
@@ -96,13 +90,7 @@ def get_rotated_objects(image, min_area_rects):
 
 
 def check_type(cnt):
-    shape = 'null'
     peri = cv2.arcLength(cnt, True)
     approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
 
-    if len(approx) == 4:
-        shape = 'bill'
-    else:
-        shape = 'coin'
-
-    return shape
+    return "bill" if len(approx) == 4 else "coin"

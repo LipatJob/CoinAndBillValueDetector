@@ -14,7 +14,6 @@ def get_bill_value(bill_image):
 
 
 def apply_preprocess(bill):
-
     # Apply Gaussian Blur and Median Blur
     gauss_img = cv2.GaussianBlur(bill, (11, 11), 0)
     median_img = cv2.medianBlur(gauss_img, 7)
@@ -36,6 +35,7 @@ def get_area_of_interest(bill):
 
     bill = cv2.normalize(bill, bill, 0, 215, cv2.NORM_MINMAX)
 
+    # get the lower right portion of the image
     h_start = int(height * .76)
     h_end = int(height * .97)
     w_start = int(width * .80)
@@ -63,6 +63,7 @@ def read_bill_value(img):
     return int(string) if string != "" else 0
 
 def show_bill(image, value):
+    # helper function for displaying the bill after processing
     image = image.copy()
     image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 

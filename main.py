@@ -5,6 +5,9 @@ import numpy as np
 
 
 def main():
+    # Please see "test.py" for testing the dataset
+
+    # Uncomment pictures to be processed
     IMAGE_LOCATION = [
         # "dataset/coins.jpg",
         # "dataset/bills.jpg",
@@ -29,6 +32,19 @@ def get_value_from_image(image_location):
     display_values(values, original_img)
 
     return calculate_total(values)
+
+
+def apply_preprocess(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+    return blurred
+
+
+def calculate_total(values):
+    total = 0
+    for value in values:
+        total += int(value["value"])
+    return total
 
 
 def display_image(image):
@@ -67,19 +83,6 @@ def display_values(values, image):
 
     cv2.imshow("", image)
     cv2.waitKey()
-
-
-def apply_preprocess(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (3, 3), 0)
-    return blurred
-
-
-def calculate_total(values):
-    total = 0
-    for value in values:
-        total += int(value["value"])
-    return total
 
 
 main()

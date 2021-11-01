@@ -47,6 +47,7 @@ def get_pixel_per_metric(box):
 
 
 def show_coin(image, amount, diameter):
+    # helper function for displaying the coin after processing
     image = image.copy()
     image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
