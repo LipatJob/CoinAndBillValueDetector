@@ -36,7 +36,7 @@ def get_area_of_interest(bill):
 
     bill = cv2.normalize(bill, bill, 0, 215, cv2.NORM_MINMAX)
 
-    h_start = int(height * .80)
+    h_start = int(height * .76)
     h_end = int(height * .97)
     w_start = int(width * .80)
     w_end = int(width * .97)

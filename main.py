@@ -8,12 +8,13 @@ def main():
     IMAGE_LOCATION = [
         # "dataset/coins.jpg",
         # "dataset/bills.jpg",
-        "dataset/coins_bills.jpg",
+        # "dataset/coins_bills.jpg",
         # "dataset/rotated_bills.png",
+        # "dataset/other_bills.jpg",
     ]
 
     for location in IMAGE_LOCATION:
-        print("Value:",get_value_from_image(location))
+        print("Value:", get_value_from_image(location))
 
 
 def get_value_from_image(image_location):
@@ -28,6 +29,7 @@ def get_value_from_image(image_location):
     display_values(values, original_img)
 
     return calculate_total(values)
+
 
 def display_image(image):
     factor = 700

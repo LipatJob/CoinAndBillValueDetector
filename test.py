@@ -2,6 +2,7 @@ import unittest
 
 from main import get_value_from_image
 
+
 class TestMain(unittest.TestCase):
 
     def test_coins(self):
@@ -15,6 +16,9 @@ class TestMain(unittest.TestCase):
 
     def test_rotated(self):
         self.assertEqual(get_value_from_image("dataset/rotated_bills.png"), 90)
+
+    def test_other_bills(self):
+        self.assertEqual(get_value_from_image("dataset/other_bills.jpg"), 1100)
 
 
 if __name__ == '__main__':
