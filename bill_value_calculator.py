@@ -6,10 +6,10 @@ import pytesseract
 
 def get_bill_value(bill_image, pre_encoded_faces):
     bill_image = apply_preprocess(bill_image)
-    boxes, names = get_faces_in_bill(bill_image, pre_encoded_faces)
-    value = get_value_of_names(names)
+    boxes, value = match_face_and_value(bill_image, pre_encoded_faces)
+    value = get_int_value(value)
 
-    show_bill(bill_image, boxes, names, value)
+    show_bill(bill_image, boxes, value)
 
     return value
 
@@ -22,7 +22,8 @@ def apply_preprocess(bill):
     return median_img
 
 
-def get_faces_in_bill(bill, pre_encoded_faces):
+def match_face_and_value(bill, pre_encoded_faces):
+    bill = bill.copy()
     boxes = face_recognition.face_locations(bill)
     encodings = face_recognition.face_encodings(bill, boxes)
     
@@ -48,8 +49,19 @@ def get_faces_in_bill(bill, pre_encoded_faces):
         # add the name to the list of matched names
         names.append(name)
 
-    return boxes, names
+    return boxes, names[0]
 
+
+def get_int_value(value):
+    int_values = {
+        "20 Pesos": 20,
+        "50 Pesos": 50,
+        "100 Pesos": 100,
+        "500 Pesos": 500,
+        "1000 Pesos": 1000,
+    }
+
+    return int_values.get(value, None)
 
 def get_value_of_names(names):
     values = {
@@ -75,10 +87,9 @@ def get_value_of_names(names):
     return value
 
 
-def show_bill(image, boxes, names, value):
+def show_bill(image, boxes, value):
     # helper function for displaying the bill after processing
     image = image.copy()
-    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
     factor = 150
     ratio = image.shape[1] / image.shape[0]
@@ -86,16 +97,8 @@ def show_bill(image, boxes, names, value):
     height = int(factor * ratio)
 
     image = cv2.resize(image, (height, width))
-    cv2.putText(image, f"Value: {value}", (0, 50),
+    cv2.putText(image, f"Value: {value}", (50, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-    
-    cv2.drawContours(image, boxes, 0, (0, 0, 255), 2)
-    for box, name in zip(boxes, names):
-        name_location = min(box, key=lambda point : point[0]).copy()
-        name_location[0] += 50
-        
-        cv2.putText(image, f"Name: {name}", name_location,
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     cv2.imshow("", image)
     cv2.waitKey()

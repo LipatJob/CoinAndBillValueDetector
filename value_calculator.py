@@ -43,7 +43,7 @@ def get_values(image):
 
 
 def get_contours(image):
-    image = image.copy()
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     thresh = cv2.threshold(image, 60, 255, cv2.THRESH_BINARY)[1]
 
     # get contours

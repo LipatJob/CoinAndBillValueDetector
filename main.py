@@ -35,8 +35,7 @@ def get_value_from_image(image_location):
 
 
 def apply_preprocess(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+    blurred = cv2.GaussianBlur(image, (3, 3), 0)
     return blurred
 
 

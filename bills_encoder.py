@@ -8,7 +8,7 @@ from multiprocessing import Pool
 
 
 def get_encoded_bills(re_encode = False):
-    input_folder_location = "dataset/"
+    input_folder_location = "dataset"
     output_file_location = "model/bills_model.pickle" 
 
     if not re_encode and os.path.exists(output_file_location):
