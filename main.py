@@ -9,11 +9,11 @@ def main():
 
     # Uncomment pictures to be processed
     IMAGE_LOCATION = [
-        # "dataset/coins.jpg",
-        "examples/bills.jpg",
-        # "dataset/coins_bills.jpg",
-        # "dataset/rotated_bills.png",
-        # "dataset/other_bills.jpg",
+        # "examples/coins.jpg",
+        # "examples/bills.jpg",
+        # "examples/coins_bills.jpg",
+        # "examples/rotated_bills.png",
+        "examples/other_bills.jpg",
     ]
 
     for location in IMAGE_LOCATION:

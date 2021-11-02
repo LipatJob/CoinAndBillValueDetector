@@ -49,7 +49,10 @@ def match_face_and_value(bill, pre_encoded_faces):
         # add the name to the list of matched names
         names.append(name)
 
-    return boxes, names[0]
+    name_count = {name:names.count(name) for name in set(names)}
+    max_name_count = max(name_count, key=name_count.get)
+
+    return boxes, max_name_count
 
 
 def get_int_value(value):
