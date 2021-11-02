@@ -1,15 +1,18 @@
 import cv2
+import face_recognition
 import numpy as np
 import pytesseract
 
+from bills_encoder import get_encoded_bills
+
 
 def get_bill_value(bill_image):
-    area_of_interest = get_area_of_interest(bill_image)
-    area_of_interest = apply_preprocess(area_of_interest)
-    value  = read_bill_value(area_of_interest)
+    bill_image = apply_preprocess(bill_image)
+    boxes, names = get_faces_in_bill(bill_image)
+    value = get_value_of_names(names)
 
-    show_bill(area_of_interest, value)
-
+    show_bill(bill_image, boxes, names, value)
+    
     return value
 
 
@@ -18,51 +21,64 @@ def apply_preprocess(bill):
     gauss_img = cv2.GaussianBlur(bill, (11, 11), 0)
     median_img = cv2.medianBlur(gauss_img, 7)
 
-    # Apply binary thresholding
-    thresh = cv2.adaptiveThreshold(
-        median_img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 21, 6)
-
-    # Dilate the image
-    kernel = np.ones((3, 3), np.uint8)
-    img_dilation = cv2.dilate(thresh, kernel, iterations=1)
+    return median_img
 
 
-    return img_dilation
+def get_faces_in_bill(bill):
+    boxes = face_recognition.face_locations(bill)
+    encodings = face_recognition.face_encodings(bill, boxes)
+
+    pre_encoded_faces = get_encoded_bills()
+    # initialize the list of names for each face detected
+    names = []
+
+    for encoding in encodings:
+        # attempt to match each face in the input image to our known encodings
+        matches = face_recognition.compare_faces(
+            pre_encoded_faces["encodings"], encoding)
+
+        # get only the names of those matched faces
+        matched_names = [name for name, matched in zip(
+            pre_encoded_faces["names"], matches) if matched]
+
+        # count how many times the the name was matched
+        counts = {matched_name: matched_names.count(
+            matched_name) for matched_name in set(matched_names)}
+
+        # get the name that was matched the most
+        name = max(counts, key=counts.get) if len(counts) > 0 else "Unknown"
+
+        # add the name to the list of matched names
+        names.append(name)
+
+    return boxes, names
 
 
-def get_area_of_interest(bill):
-    height, width = bill.shape
+def get_value_of_names(names):
+    values = {
+        "Manuel L. Quezon": 20,
+        "Sergio Osmeña": 50,
+        "Manuel A. Roxas": 100,
+        "Diosdado P. Macapagal": 200,
+        "Corazon C. Aquino": 500,
+        "Benigno S. Aquino Jr": 500,
+        "José Abad Santos": 1000,
+        "Vicente Lim": 1000,
+        "Josefa Llanes Escoda": 1000
+    }
 
-    bill = cv2.normalize(bill, bill, 0, 215, cv2.NORM_MINMAX)
-
-    # get the lower right portion of the image
-    h_start = int(height * .76)
-    h_end = int(height * .97)
-    w_start = int(width * .80)
-    w_end = int(width * .97)
-    crop_img = bill[h_start:h_end, w_start:w_end].copy()
-
-    # resize image for clearer recognition
-    scale = 200
-    ratio = crop_img.shape[0]/crop_img.shape[1]
-    width = int(scale)
-    height = int(scale * ratio)
-    dim = (width, height)
-    resized = cv2.resize(crop_img, dim, interpolation=cv2.INTER_AREA)
-
-    return resized
+    value = None
+    for name in names:
+        if name not in values:
+            return None
+        current_value = values[name]
+        if value != None and current_value != value:
+            return None
+        value = current_value
+    return value
 
 
-def read_bill_value(img):
-    # if tesseract is not in PATH variable, use this
-    # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
-    custom_config = f'--psm 13 outputbase digits -l eng'
-    data = pytesseract.image_to_string(img, config=custom_config)
-    string = ''.join([char for char in data if char.isdigit()])
-    return int(string) if string != "" else 0
-
-def show_bill(image, value):
+def show_bill(image, boxes, names, value):
     # helper function for displaying the bill after processing
     image = image.copy()
     image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
@@ -75,6 +91,14 @@ def show_bill(image, value):
     image = cv2.resize(image, (height, width))
     cv2.putText(image, f"Value: {value}", (0, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    
+    cv2.drawContours(image, boxes, 0, (0, 0, 255), 2)
+    for box, name in zip(boxes, names):
+        name_location = min(box, key=lambda point : point[0]).copy()
+        name_location[0] += 50
+        
+        cv2.putText(image, f"Name: {name}", name_location,
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     cv2.imshow("", image)
     cv2.waitKey()
