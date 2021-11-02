@@ -8,12 +8,14 @@ from multiprocessing import Pool
 
 
 def get_encoded_bills(re_encode = False):
-    input_folder_location = "dataset"
+    input_folder_location = "dataset/"
     output_file_location = "model/bills_model.pickle" 
 
     if not re_encode and os.path.exists(output_file_location):
+        print("Encoded dataset found. Reusing")
         return get_encoded(output_file_location)
 
+    print("Encoding dataset")
     return encode_and_save(input_folder_location, output_file_location, use_cnn=False)
 
 
@@ -32,8 +34,7 @@ def encode_directory(folder_location, use_cnn=False):
     if use_cnn:
         encodings = map(encode_image_cnn, images)
     else:
-        with Pool(4) as pool:
-            encodings = pool.map(encode_image, images)
+        encodings = map(encode_image, images)
 
     known_names = []
     known_encodings = []
@@ -53,13 +54,17 @@ def flatten(t):
 def encode_image(image):
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     boxes = face_recognition.face_locations(rgb)
-    return face_recognition.face_encodings(rgb, boxes)
+    encoding = face_recognition.face_encodings(rgb, boxes)
+    print("Encoding Done")
+    return encoding
 
 
 def encode_image_cnn(image):
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     boxes = face_recognition.face_locations(rgb, model="cnn")
-    return face_recognition.face_encodings(rgb, boxes)
+    encoding = face_recognition.face_encodings(rgb, boxes)
+    print("Encoding done")
+    return encoding 
 
 
 def pickle_object(data, file_location):

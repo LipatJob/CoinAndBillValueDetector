@@ -3,16 +3,14 @@ import face_recognition
 import numpy as np
 import pytesseract
 
-from bills_encoder import get_encoded_bills
 
-
-def get_bill_value(bill_image):
+def get_bill_value(bill_image, pre_encoded_faces):
     bill_image = apply_preprocess(bill_image)
-    boxes, names = get_faces_in_bill(bill_image)
+    boxes, names = get_faces_in_bill(bill_image, pre_encoded_faces)
     value = get_value_of_names(names)
 
     show_bill(bill_image, boxes, names, value)
-    
+
     return value
 
 
@@ -24,11 +22,10 @@ def apply_preprocess(bill):
     return median_img
 
 
-def get_faces_in_bill(bill):
+def get_faces_in_bill(bill, pre_encoded_faces):
     boxes = face_recognition.face_locations(bill)
     encodings = face_recognition.face_encodings(bill, boxes)
-
-    pre_encoded_faces = get_encoded_bills()
+    
     # initialize the list of names for each face detected
     names = []
 

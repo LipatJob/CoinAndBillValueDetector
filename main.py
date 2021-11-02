@@ -10,7 +10,7 @@ def main():
     # Uncomment pictures to be processed
     IMAGE_LOCATION = [
         # "dataset/coins.jpg",
-        # "dataset/bills.jpg",
+        "examples/bills.jpg",
         # "dataset/coins_bills.jpg",
         # "dataset/rotated_bills.png",
         # "dataset/other_bills.jpg",

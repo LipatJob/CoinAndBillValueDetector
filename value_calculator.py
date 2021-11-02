@@ -4,6 +4,7 @@ from imutils import contours
 import numpy as np
 
 from bill_value_calculator import get_bill_value
+from bills_encoder import get_encoded_bills
 from coin_value_calculator import get_coin_value, get_pixel_per_metric
 
 
@@ -15,7 +16,7 @@ def get_values(image):
     items = get_rotated_objects(image, min_areas)
 
     pixel_per_metric = None
-
+    pre_encoded_faces = None
     values = []
     for money_type, item, box in zip(money_types, items, boxes):
         cv2.imshow("", item)
@@ -28,7 +29,8 @@ def get_values(image):
 
         # process bills
         elif money_type == "bill":
-            value = get_bill_value(item)
+            if pre_encoded_faces == None: pre_encoded_faces = get_encoded_bills()
+            value = get_bill_value(item, pre_encoded_faces)
 
         # add value to list
         values.append({
