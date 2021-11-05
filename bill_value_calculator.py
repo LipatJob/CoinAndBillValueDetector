@@ -4,22 +4,23 @@ import numpy as np
 import pytesseract
 
 
-def get_bill_value(bill_image, pre_encoded_faces):
+def get_bill_value(bill_image, pre_encoded_faces, debug_mode = False):
     bill_image = apply_preprocess(bill_image)
     boxes, value = match_face_and_value(bill_image, pre_encoded_faces)
 
     value = get_int_value(value)
 
-    #show_bill(bill_image, boxes, value)
+    if debug_mode:
+        show_bill(bill_image, boxes, value)
 
     return value
 
 
 def apply_preprocess(bill):
     # Apply Gaussian Blur and Median Blur
-    gauss_img = cv2.GaussianBlur(bill, (11, 11), 0)
-    median_img = cv2.medianBlur(gauss_img, 7)
-
+    bill = cv2.normalize(bill, bill, 0, 255, cv2.NORM_MINMAX)
+    gauss_img = cv2.GaussianBlur(bill, (5, 5), 0)
+    median_img = cv2.medianBlur(gauss_img, 5)
     return median_img
 
 

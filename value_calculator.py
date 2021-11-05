@@ -6,6 +6,7 @@ import numpy as np
 from bill_value_calculator import get_bill_value
 from bills_encoder import get_encoded_bills
 from coin_value_calculator import get_coin_value, get_pixel_per_metric
+from debug_utils import resize_image
 
 
 class ValueCalculator:
@@ -13,8 +14,8 @@ class ValueCalculator:
         self.pixel_per_metric = None
         self.pre_encoded_faces = None
 
-    def get_values(self, image):
-        cnts = self.get_contours(image)
+    def get_values(self, image, debug_mode=False):
+        cnts = self.get_contours(image, debug_mode)
         money_types = [self.check_type(cnt) for cnt in cnts]
         min_areas = [cv2.minAreaRect(contour) for contour in cnts]
         boxes = [cv2.boxPoints(min_area) for min_area in min_areas]
@@ -22,18 +23,21 @@ class ValueCalculator:
 
         values = []
         for money_type, item, box in zip(money_types, items, boxes):
+            if debug_mode:
+                cv2.imshow("", resize_image(item, 300))
+                cv2.waitKey()
 
             # process coins
             if money_type == "coin":
                 if self.pixel_per_metric == None:
                     self.pixel_per_metric = get_pixel_per_metric(box)
-                value = get_coin_value(box, self.pixel_per_metric, item)
+                value = get_coin_value(box, self.pixel_per_metric, debug_mode, item)
 
             # process bills
             if money_type == "bill":
                 if self.pre_encoded_faces == None:
                     self.pre_encoded_faces = get_encoded_bills()
-                value = get_bill_value(item, self.pre_encoded_faces)
+                value = get_bill_value(item, self.pre_encoded_faces, debug_mode)
 
             # add value to list
             values.append({
@@ -44,10 +48,22 @@ class ValueCalculator:
 
         return values
 
-    def get_contours(self, image):
-        cv2.namedWindow("thresh", cv2.WINDOW_NORMAL)
+    def apply_preprocess(self, image):
+        image = cv2.normalize(image, image, 0, 255, cv2.NORM_MINMAX)
+        image = cv2.medianBlur(image, 7)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        thresh = cv2.threshold(image, 110, 255, cv2.THRESH_BINARY)[1]
+
+        return image
+
+    def get_contours(self, image, debug_mode=False):
+        image = image.copy()
+        image = self.apply_preprocess(image)
+        thresh = cv2.threshold(
+            image, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+
+        if debug_mode:
+            cv2.imshow("", thresh)
+            cv2.waitKey()
 
         # get contours
         cnts = cv2.findContours(
