@@ -7,7 +7,7 @@ import os
 from multiprocessing import Pool
 
 
-def get_encoded_bills(re_encode = False):
+def get_encoded_bills(re_encode = False, cuda_available=False):
     input_folder_location = "dataset"
     output_file_location = "model/bills_model.pickle" 
 
@@ -16,7 +16,7 @@ def get_encoded_bills(re_encode = False):
         return get_encoded(output_file_location)
 
     print("Encoding dataset")
-    return encode_and_save(input_folder_location, output_file_location, use_cnn=False)
+    return encode_and_save(input_folder_location, output_file_location, use_cnn=cuda_available)
 
 
 def encode_and_save(input_folder_location, output_file_location, use_cnn=True):

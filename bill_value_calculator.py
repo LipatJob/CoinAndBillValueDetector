@@ -4,9 +4,9 @@ import numpy as np
 import pytesseract
 
 
-def get_bill_value(bill_image, pre_encoded_faces, debug_mode = False):
+def get_bill_value(bill_image, pre_encoded_faces, cuda_available = False, debug_mode = False):
     bill_image = apply_preprocess(bill_image)
-    boxes, value = match_face_and_value(bill_image, pre_encoded_faces)
+    boxes, value = match_face_and_value(bill_image, pre_encoded_faces, cuda_available)
 
     value = get_int_value(value)
 
@@ -31,9 +31,10 @@ def apply_preprocess(bill):
     return rgb_small_frame
 
 
-def match_face_and_value(bill, pre_encoded_faces):
+def match_face_and_value(bill, pre_encoded_faces, cuda_available):
     bill = bill.copy()
-    boxes = face_recognition.face_locations(bill, model="cnn")
+    model = "cnn" if cuda_available else "hog"
+    boxes = face_recognition.face_locations(bill, model=model)
     encodings = face_recognition.face_encodings(bill, boxes, model="small")
     
     # initialize the list of names for each face detected

@@ -10,9 +10,12 @@ from debug_utils import resize_image
 
 
 class ValueCalculator:
-    def __init__(self):
+    def __init__(self, cuda_available = False):
+        if cuda_available:
+            print("Using CUDA")
         self.pixel_per_metric = None
         self.pre_encoded_faces = None
+        self.cuda_available = cuda_available
 
     def get_values(self, image, debug_mode=False):
         cnts = self.get_contours(image, debug_mode)
@@ -36,8 +39,8 @@ class ValueCalculator:
             # process bills
             if money_type == "bill":
                 if self.pre_encoded_faces == None:
-                    self.pre_encoded_faces = get_encoded_bills()
-                value = get_bill_value(item, self.pre_encoded_faces, debug_mode)
+                    self.pre_encoded_faces = get_encoded_bills(cuda_available = self.cuda_available)
+                value = get_bill_value(item, self.pre_encoded_faces, self.cuda_available, debug_mode)
 
             # add value to list
             values.append({

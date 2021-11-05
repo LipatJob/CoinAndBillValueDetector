@@ -11,9 +11,6 @@ def main():
     VIDEO_LOCATION = "3fps_orig.mp4"
 
     cap = cv2.VideoCapture(VIDEO_LOCATION)
-
-    print("CUDA enabled:", dlib.DLIB_USE_CUDA)
-
     
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
@@ -22,10 +19,8 @@ def main():
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter("videos/output.mp4", fourcc, fps, frame_size, True)
     
-    
-    print("Cuda enabled:", dlib.DLIB_USE_CUDA) # true, if cuda is enabled.
-
-    value_calculator = ValueCalculator()
+    cuda_available = dlib.DLIB_USE_CUDA # true, if cuda is enabled.
+    value_calculator = ValueCalculator(cuda_available)
 
     while(cap.isOpened()):
         ret, frame = cap.read()
