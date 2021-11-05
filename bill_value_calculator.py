@@ -7,9 +7,10 @@ import pytesseract
 def get_bill_value(bill_image, pre_encoded_faces):
     bill_image = apply_preprocess(bill_image)
     boxes, value = match_face_and_value(bill_image, pre_encoded_faces)
+
     value = get_int_value(value)
 
-    show_bill(bill_image, boxes, value)
+    #show_bill(bill_image, boxes, value)
 
     return value
 
@@ -49,7 +50,13 @@ def match_face_and_value(bill, pre_encoded_faces):
         # add the name to the list of matched names
         names.append(name)
 
-    return boxes, names[0]
+    name_count = {name:names.count(name) for name in set(names)}
+
+    if len(name_count) == 0:
+        return boxes, 'null'
+
+    max_name_count = max(name_count, key=name_count.get)
+    return boxes, max_name_count
 
 
 def get_int_value(value):
@@ -59,6 +66,7 @@ def get_int_value(value):
         "100 Pesos": 100,
         "500 Pesos": 500,
         "1000 Pesos": 1000,
+        "null": 0
     }
 
     return int_values.get(value, None)

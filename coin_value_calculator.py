@@ -13,7 +13,7 @@ def get_coin_value(box, pixel_per_metric, image):
             coin_value = current_type
             break
 
-    show_coin(image, coin_value, diameter)
+    #show_coin(image, coin_value, diameter)
     return coin_value
 
 
@@ -49,7 +49,7 @@ def get_pixel_per_metric(box):
 def show_coin(image, amount, diameter):
     # helper function for displaying the coin after processing
     image = image.copy()
-    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+    #image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
     factor = 300
     ratio = image.shape[1] / image.shape[0]

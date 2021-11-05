@@ -19,8 +19,8 @@ def get_values(image):
     pre_encoded_faces = None
     values = []
     for money_type, item, box in zip(money_types, items, boxes):
-        cv2.imshow("", item)
-        cv2.waitKey()
+        #cv2.imshow("", item)
+        #cv2.waitKey()
 
         # process coins
         if money_type == "coin":
@@ -28,7 +28,7 @@ def get_values(image):
             value = get_coin_value(box, pixel_per_metric, item)
 
         # process bills
-        elif money_type == "bill":
+        if money_type == "bill":
             if pre_encoded_faces == None: pre_encoded_faces = get_encoded_bills()
             value = get_bill_value(item, pre_encoded_faces)
 
@@ -43,17 +43,22 @@ def get_values(image):
 
 
 def get_contours(image):
+    cv2.namedWindow("thresh", cv2.WINDOW_NORMAL)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    thresh = cv2.threshold(image, 60, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.threshold(image, 110, 255, cv2.THRESH_BINARY)[1]
 
     # get contours
     cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     (cnts, _) = contours.sort_contours(cnts)
 
-    # filter contours that are too small
+    cv2.imshow('thresh', thresh)
+
+    # filter contours that are too small or too big
     area = image.shape[0] * image.shape[1]
-    cnts = [cnt for cnt in cnts if cv2.contourArea(cnt) > area * .005]
+    min_area = area * .005
+    max_area = area * .98
+    cnts = [cnt for cnt in cnts if min_area < cv2.contourArea(cnt) < max_area ]
     
     return cnts
 
