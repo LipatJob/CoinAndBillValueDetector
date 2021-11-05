@@ -13,8 +13,12 @@ def main():
         # "examples/bills.jpg",
         # "examples/coins_bills.jpg",
         # "examples/rotated_bills.png",
+<<<<<<< HEAD
         # "examples/other_bills.jpg",
          "pic.jpg"
+=======
+        "examples/other_bills.jpg",
+>>>>>>> 287b066da297076fa7880c707029057cb9b329ab
     ]
 
     for location in IMAGE_LOCATION:
