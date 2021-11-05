@@ -1,5 +1,5 @@
 import cv2
-from value_calculator import get_values
+from value_calculator import ValueCalculator
 import pprint
 import numpy as np
 
@@ -26,9 +26,10 @@ def get_value_from_image(image_location):
     original_img = img.copy()
 
     display_image(img)
+    value_calculator = ValueCalculator()
 
     img = apply_preprocess(img)
-    values = get_values(img)
+    values = value_calculator.get_values(img)
 
     display_values(values, original_img)
 
