@@ -51,16 +51,11 @@ def match_face_and_value(bill, pre_encoded_faces):
         names.append(name)
 
     name_count = {name:names.count(name) for name in set(names)}
-<<<<<<< HEAD
 
     if len(name_count) == 0:
         return boxes, 'null'
 
     max_name_count = max(name_count, key=name_count.get)
-=======
-    max_name_count = max(name_count, key=name_count.get)
-
->>>>>>> 287b066da297076fa7880c707029057cb9b329ab
     return boxes, max_name_count
 
 
