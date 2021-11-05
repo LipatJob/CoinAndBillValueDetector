@@ -43,7 +43,6 @@ def get_values(image):
 
 
 def get_contours(image):
-    cv2.namedWindow("thresh", cv2.WINDOW_NORMAL)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     thresh = cv2.threshold(image, 110, 255, cv2.THRESH_BINARY)[1]
 

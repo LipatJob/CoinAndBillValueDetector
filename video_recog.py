@@ -3,19 +3,27 @@ from value_calculator import get_values
 import pprint
 import numpy as np
 from time import sleep
+import dlib
 
+dlib.DLIB_USE_CUDA
 
 def main():
     VIDEO_LOCATION = "3fps_orig.mp4"
 
     cap = cv2.VideoCapture(VIDEO_LOCATION)
 
+    print("CUDA enabled:", dlib.DLIB_USE_CUDA)
+
+    
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
     frame_size = (frame_width, frame_height)
     fps = 30
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter("videos/output.mp4", fourcc, fps, frame_size, True)
+    
+    
+    print("Cuda enabled:", dlib.DLIB_USE_CUDA) # true, if cuda is enabled.
 
     while(cap.isOpened()):
         ret, frame = cap.read()
@@ -25,8 +33,10 @@ def main():
 
             display_values(values, frame)
 
+           
             if writer is not None:
                 writer.write(frame)
+            
 
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
