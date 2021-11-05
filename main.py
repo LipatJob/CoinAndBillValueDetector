@@ -1,5 +1,5 @@
 import cv2
-from value_calculator import get_values
+from value_calculator import ValueCalculator
 import pprint
 import numpy as np
 
@@ -11,10 +11,10 @@ def main():
     IMAGE_LOCATION = [
         # "examples/coins.jpg",
         # "examples/bills.jpg",
-        # "examples/coins_bills.jpg",
+        "examples/coins_bills.jpg",
         # "examples/rotated_bills.png",
         # "examples/other_bills.jpg",
-         "pic.jpg"
+        # "pic.jpg"
     ]
 
     for location in IMAGE_LOCATION:
@@ -26,9 +26,10 @@ def get_value_from_image(image_location):
     original_img = img.copy()
 
     display_image(img)
+    value_calculator = ValueCalculator()
 
     img = apply_preprocess(img)
-    values = get_values(img)
+    values = value_calculator.get_values(img, True)
 
     display_values(values, original_img)
 
@@ -36,8 +37,7 @@ def get_value_from_image(image_location):
 
 
 def apply_preprocess(image):
-    blurred = cv2.GaussianBlur(image, (3, 3), 0)
-    return blurred
+    return image
 
 
 def calculate_total(values):

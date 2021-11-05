@@ -4,24 +4,26 @@ import numpy as np
 import pytesseract
 
 
-def get_bill_value(bill_image, pre_encoded_faces):
+def get_bill_value(bill_image, pre_encoded_faces, debug_mode = False):
     bill_image = apply_preprocess(bill_image)
     boxes, value = match_face_and_value(bill_image, pre_encoded_faces)
 
     value = get_int_value(value)
 
-    #show_bill(bill_image, boxes, value)
+    if debug_mode:
+        show_bill(bill_image, boxes, value)
 
     return value
 
 
 def apply_preprocess(bill):
-    # Resize frame of video to 1/4 size for faster face recognition processing
-    small_frame = cv2.resize(bill, (0, 0), fx=0.25, fy=0.25)
-
     # Apply Gaussian Blur and Median Blur
-    gauss_img = cv2.GaussianBlur(bill, (11, 11), 0)
-    median_img = cv2.medianBlur(gauss_img, 7)
+    bill = cv2.normalize(bill, bill, 0, 255, cv2.NORM_MINMAX)
+    gauss_img = cv2.GaussianBlur(bill, (5, 5), 0)
+    median_img = cv2.medianBlur(gauss_img, 5)
+
+    # Resize frame of video to 1/4 size for faster face recognition processing
+    small_frame = cv2.resize(median_img, (0, 0), fx=0.25, fy=0.25)
 
     # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
     rgb_small_frame = small_frame[:, :, ::-1]

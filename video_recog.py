@@ -1,5 +1,5 @@
 import cv2
-from value_calculator import get_values
+from value_calculator import ValueCalculator
 import pprint
 import numpy as np
 from time import sleep
@@ -18,18 +18,20 @@ def main():
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
     frame_size = (frame_width, frame_height)
-    fps = 30
+    fps = 3
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter("videos/output.mp4", fourcc, fps, frame_size, True)
     
     
     print("Cuda enabled:", dlib.DLIB_USE_CUDA) # true, if cuda is enabled.
 
+    value_calculator = ValueCalculator()
+
     while(cap.isOpened()):
         ret, frame = cap.read()
         if ret == True:
             img = apply_preprocess(frame)
-            values = get_values(img)
+            values = value_calculator.get_values(img)
 
             display_values(values, frame)
 
@@ -43,7 +45,6 @@ def main():
 
         else: 
             break
-        
     
     cap.release()
     cv2.destroyAllWindows()
