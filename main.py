@@ -29,7 +29,6 @@ def get_value_from_image(image_location):
 
     img = apply_preprocess(img)
     values = get_values(img)
-    print(values)
 
     display_values(values, original_img)
 

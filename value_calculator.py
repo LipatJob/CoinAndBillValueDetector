@@ -52,14 +52,12 @@ def get_contours(image):
     cnts = imutils.grab_contours(cnts)
     (cnts, _) = contours.sort_contours(cnts)
 
-    cv2.imshow('thresh', thresh)
-
     # filter contours that are too small or too big
     area = image.shape[0] * image.shape[1]
-    min_area = area * .005
-    max_area = area * .98
-    cnts = [cnt for cnt in cnts if min_area < cv2.contourArea(cnt) < max_area ]
-    
+    min_area = area * .001
+    max_area = area * 1
+    cnts = [cnt for cnt in cnts if min_area < cv2.contourArea(cnt) < max_area]
+
     return cnts
 
 
