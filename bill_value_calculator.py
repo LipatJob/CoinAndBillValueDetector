@@ -16,17 +16,23 @@ def get_bill_value(bill_image, pre_encoded_faces):
 
 
 def apply_preprocess(bill):
+    # Resize frame of video to 1/4 size for faster face recognition processing
+    small_frame = cv2.resize(bill, (0, 0), fx=0.25, fy=0.25)
+
     # Apply Gaussian Blur and Median Blur
     gauss_img = cv2.GaussianBlur(bill, (11, 11), 0)
     median_img = cv2.medianBlur(gauss_img, 7)
 
-    return median_img
+    # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+    rgb_small_frame = small_frame[:, :, ::-1]
+
+    return rgb_small_frame
 
 
 def match_face_and_value(bill, pre_encoded_faces):
     bill = bill.copy()
-    boxes = face_recognition.face_locations(bill)
-    encodings = face_recognition.face_encodings(bill, boxes)
+    boxes = face_recognition.face_locations(bill, model="cnn")
+    encodings = face_recognition.face_encodings(bill, boxes, model="small")
     
     # initialize the list of names for each face detected
     names = []
