@@ -8,7 +8,7 @@ import dlib
 dlib.DLIB_USE_CUDA
 
 def main():
-    VIDEO_LOCATION = "tests/dataset/videos/video_money_recog.mp4"
+    VIDEO_LOCATION = "tests/dataset/videos/3fps_orig.mp4"
 
     cap = cv2.VideoCapture(VIDEO_LOCATION)
 
