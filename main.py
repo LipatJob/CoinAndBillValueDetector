@@ -86,4 +86,5 @@ def display_values(values, image):
     cv2.waitKey()
 
 
-main()
+if __name__ == "__main__":
+    main()
