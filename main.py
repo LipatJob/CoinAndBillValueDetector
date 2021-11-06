@@ -1,4 +1,5 @@
 import cv2
+from debug_utils import draw_bounding_box
 from value_calculator import ValueCalculator
 import pprint
 import numpy as np
@@ -27,7 +28,7 @@ def get_value_from_image(image_location, debug_mode = False):
     original_img = img.copy()
 
     display_image(img)
-    value_calculator = ValueCalculator(cuda_available=True)
+    value_calculator = ValueCalculator()
     
     values = value_calculator.get_values(img, debug_mode)
 
@@ -62,13 +63,21 @@ def display_values(values, image):
         cv2.drawContours(image, [box], 0, (0, 0, 255), 2)
         type_point = max(box, key=lambda point: point[1]).copy()
         value_point = type_point.copy()
+        names_point = type_point.copy()
 
         type_point[1] += 30
         value_point[1] += 70
+        names_point[1] += 100
         cv2.putText(image, value["type"], type_point,
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv2.putText(image, str(
             value["value"]) + " PHP", value_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+        if len(value["names"]) > 0:
+            names = ", ".join(value["names"])
+            cv2.putText(image, names, names_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            
+
 
     factor = 700
     ratio = image.shape[0] / image.shape[1]

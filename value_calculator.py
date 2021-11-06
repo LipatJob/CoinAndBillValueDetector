@@ -41,19 +41,15 @@ class ValueCalculator:
             if money_type == "bill":
                 if self.pre_encoded_faces == None:
                     self.pre_encoded_faces = get_encoded_bills(cuda_available = self.cuda_available)
-                value, bill_box, bill_name = get_bill_value(item, self.pre_encoded_faces, self.cuda_available, debug_mode)
-                bill_boxes.append(bill_box)
-                bill_names.append(bill_name)
+                value, bill_boxes, bill_names = get_bill_value(item, self.pre_encoded_faces, self.cuda_available, debug_mode)
+                
 
             # add value to list
             values.append({
                 "type": money_type,
                 "value": value,
                 "location": tuple(map(tuple, box)),
-                "faces": [{
-                    "name": bill_name,
-                    "location": bill_box
-                } for bill_box, bill_name in zip(bill_boxes, bill_names)]
+                "names": bill_names
             })
 
         return values
