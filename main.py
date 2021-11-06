@@ -84,3 +84,6 @@ def display_values(values, image):
 
     cv2.imshow("", image)
     cv2.waitKey()
+
+
+main()
