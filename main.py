@@ -10,12 +10,12 @@ def main():
     # Uncomment pictures to be processed
     IMAGE_LOCATION = [
         # "tests/dataset/examples/coins.jpg",
-        # "tests/dataset/examples/bills.jpg",
+         "tests/dataset/examples/bills.jpg",
         # "tests/dataset/examples/coins_bills.jpg",
         # "tests/dataset/examples/rotated_bills.png",
         # "tests/dataset/examples/other_bills.jpg",
         # "tests/dataset/pic.jpg"
-        "tests/dataset/examples/50 Pesos/1.jpg",
+        # "tests/dataset/examples/500 Pesos/1.jpg",
     ]
 
     for location in IMAGE_LOCATION:
@@ -27,18 +27,13 @@ def get_value_from_image(image_location, debug_mode = False):
     original_img = img.copy()
 
     display_image(img)
-    value_calculator = ValueCalculator()
-
-    img = apply_preprocess(img)
+    value_calculator = ValueCalculator(cuda_available=True)
+    
     values = value_calculator.get_values(img, debug_mode)
 
     display_values(values, original_img)
 
     return calculate_total(values)
-
-
-def apply_preprocess(image):
-    return image
 
 
 def calculate_total(values):

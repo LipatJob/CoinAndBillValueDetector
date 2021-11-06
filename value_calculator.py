@@ -40,6 +40,7 @@ class ValueCalculator:
             if money_type == "bill":
                 if self.pre_encoded_faces == None:
                     self.pre_encoded_faces = get_encoded_bills(cuda_available = self.cuda_available)
+                    
                 value = get_bill_value(item, self.pre_encoded_faces, self.cuda_available, debug_mode)
 
             # add value to list
@@ -65,7 +66,8 @@ class ValueCalculator:
             image, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
 
         if debug_mode:
-            cv2.imshow("", thresh)
+            cv2.namedWindow("threshold", cv2.WINDOW_NORMAL)
+            cv2.imshow("threshold", thresh)
             cv2.waitKey()
 
         # get contours

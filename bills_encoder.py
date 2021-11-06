@@ -57,18 +57,19 @@ def flatten(t):
 
 def encode_image(image):
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    boxes = face_recognition.face_locations(rgb)
+    boxes = face_recognition.face_locations(rgb, model="hog")
     encoding = face_recognition.face_encodings(rgb, boxes)
     print("Encoding Done")
     return encoding
 
 
 def encode_image_cnn(image):
+    #resize = resize_image(image)
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    resize = resize_image(rgb)
+    rgb = cv2.normalize(rgb, rgb, 0, 255, cv2.NORM_MINMAX)
 
-    boxes = face_recognition.face_locations(resize, model="cnn")
-    encoding = face_recognition.face_encodings(resize, boxes)
+    boxes = face_recognition.face_locations(rgb, model="cnn")
+    encoding = face_recognition.face_encodings(rgb, boxes)
     print("Encoding done")
     return encoding 
 
@@ -107,4 +108,4 @@ def resize_image(image):
 
 
 if __name__ == "__main__":
-    get_encoded_bills(True, True)
+    get_encoded_bills(True, cuda_available=True)
