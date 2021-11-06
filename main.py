@@ -15,7 +15,7 @@ def main():
         # "tests/dataset/examples/rotated_bills.png",
         # "tests/dataset/examples/other_bills.jpg",
         # "tests/dataset/pic.jpg"
-        "tests/dataset/examples/100 Pesos/1.jpg",
+        "tests/dataset/examples/50 Pesos/1.jpg",
     ]
 
     for location in IMAGE_LOCATION:

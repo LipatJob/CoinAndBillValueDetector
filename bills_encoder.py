@@ -86,5 +86,3 @@ def get_encoded(file_location):
     # Add additional validation if needed
 
     return pickle.loads(file_content)
-
-get_encoded_bills(True)
