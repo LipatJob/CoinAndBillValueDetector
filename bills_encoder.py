@@ -65,8 +65,10 @@ def encode_image(image):
 
 def encode_image_cnn(image):
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    boxes = face_recognition.face_locations(rgb, model="cnn")
-    encoding = face_recognition.face_encodings(rgb, boxes)
+    resize = resize_image(rgb)
+
+    boxes = face_recognition.face_locations(resize, model="cnn")
+    encoding = face_recognition.face_encodings(resize, boxes)
     print("Encoding done")
     return encoding 
 
@@ -86,3 +88,23 @@ def get_encoded(file_location):
     # Add additional validation if needed
 
     return pickle.loads(file_content)
+
+
+def resize_image(image):
+    image = image.copy()
+
+    width = int(image.shape[1])
+    height = int(image.shape[0])
+
+    if width > 250 or height > 250:
+        factor = 0.5
+        width = width * factor
+        height = height * factor
+        resize_image = cv2.resize(image, (int(height), int(width)))
+        return resize_image
+
+    return image
+
+
+if __name__ == "__main__":
+    get_encoded_bills(True, True)
