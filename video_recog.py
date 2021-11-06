@@ -8,7 +8,7 @@ import dlib
 dlib.DLIB_USE_CUDA
 
 def main():
-    VIDEO_LOCATION = "3fps_orig.mp4"
+    VIDEO_LOCATION = "tests/dataset/videos/video_money_recog.mp4"
 
     cap = cv2.VideoCapture(VIDEO_LOCATION)
 
@@ -21,7 +21,7 @@ def main():
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter("videos/output.mp4", fourcc, frame_rate, frame_size, True)
 
-    value_calculator = ValueCalculator()
+    value_calculator = ValueCalculator(cuda_available=True)
 
     current_frame = 0
     
@@ -29,8 +29,7 @@ def main():
         ret, frame = cap.read()
         if ret == True:
             if current_frame % frame_rate == 0:
-                img = apply_preprocess(frame)
-                values = value_calculator.get_values(img)
+                values = value_calculator.get_values(frame)
 
             display_values(values, frame)
 
@@ -48,26 +47,6 @@ def main():
     
     cap.release()
     cv2.destroyAllWindows()
-    
-
-
-def get_value_from_image(current_frame):
-    img = current_frame
-    original_img = img.copy()
-
-    #display_image(img)
-
-    img = apply_preprocess(img)
-    values = get_values(img)
-
-    #display_values(values, original_img)
-
-    return calculate_total(values)
-
-
-def apply_preprocess(image):
-    blurred = cv2.GaussianBlur(image, (3, 3), 0)
-    return blurred
 
 
 def calculate_total(values):

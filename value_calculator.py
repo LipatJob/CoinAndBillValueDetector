@@ -34,18 +34,14 @@ class ValueCalculator:
 
             # process coins
             if money_type == "coin":
-                if self.pixel_per_metric == None:
-                    self.pixel_per_metric = get_pixel_per_metric(box)
-                value = get_coin_value(
-                    box, self.pixel_per_metric, debug_mode, item)
+                if self.pixel_per_metric == None: self.pixel_per_metric = get_pixel_per_metric(box)
+                value = get_coin_value(box, self.pixel_per_metric, debug_mode, item)
 
             # process bills
             if money_type == "bill":
                 if self.pre_encoded_faces == None:
-                    self.pre_encoded_faces = get_encoded_bills(
-                        cuda_available=self.cuda_available)
-                value, bill_box, bill_name = get_bill_value(
-                    item, self.pre_encoded_faces, self.cuda_available, debug_mode)
+                    self.pre_encoded_faces = get_encoded_bills(cuda_available = self.cuda_available)
+                value, bill_box, bill_name = get_bill_value(item, self.pre_encoded_faces, self.cuda_available, debug_mode)
                 bill_boxes.append(bill_box)
                 bill_names.append(bill_name)
 
@@ -76,7 +72,8 @@ class ValueCalculator:
             image, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
 
         if debug_mode:
-            cv2.imshow("", thresh)
+            cv2.namedWindow("threshold", cv2.WINDOW_NORMAL)
+            cv2.imshow("threshold", thresh)
             cv2.waitKey()
 
         # get contours

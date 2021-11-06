@@ -5,46 +5,33 @@ from debug_utils import draw_bounding_box, resize_image
 
 
 def get_bill_value(bill_image, pre_encoded_faces, cuda_available=False, debug_mode=False):
-    bill_image = apply_preprocess(bill_image)
+    # Resize frame of video to 1/4 size for faster face recognition processing
+    small_frame = cv2.resize(bill_image, (0, 0), fx=0.5, fy=0.5)
+    small_frame = cv2.normalize(small_frame, small_frame, 0, 255, cv2.NORM_MINMAX)
+    rgb = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+
     boxes, names = match_face_names(
-        bill_image, pre_encoded_faces, cuda_available)
+        rgb, pre_encoded_faces, cuda_available)
     value = get_value_from_names(names)
 
     if debug_mode:
-        show_bill(bill_image, boxes, names, value)
+        show_bill(small_frame, boxes, names, value)
 
     return value, boxes, names
-
-
-def apply_preprocess(bill):
-    bill = cv2.cvtColor(bill, cv2.COLOR_BGR2RGB)
-
-    # Apply Gaussian Blur and Median Blur
-    bill = cv2.normalize(bill, bill, 0, 255, cv2.NORM_MINMAX)
-    gauss_img = cv2.GaussianBlur(bill, (5, 5), 0)
-    median_img = cv2.medianBlur(gauss_img, 5)
-
-    # Resize frame of video to 1/4 size for faster face recognition processing
-    small_frame = cv2.resize(median_img, (0, 0), fx=0.25, fy=0.25)
-
-    # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-    rgb_small_frame = small_frame[:, :, ::-1]
-
-    return rgb_small_frame
 
 
 def match_face_names(bill, pre_encoded_faces, cuda_available):
     bill = bill.copy()
     model = "cnn" if cuda_available else "hog"
     boxes = face_recognition.face_locations(bill, model=model)
-    encodings = face_recognition.face_encodings(bill, boxes)
+    unknown_encodings = face_recognition.face_encodings(bill, boxes)
 
     # initialize the list of names for each face detected
     names = []
-    for encoding in encodings:
+    for encoding in unknown_encodings:
         # attempt to match each face in the input image to our known encodings
         matches = face_recognition.compare_faces(
-            pre_encoded_faces["encodings"], encoding)
+            pre_encoded_faces["encodings"], encoding, tolerance=0.4)
 
         # get only the names of those matched faces
         matched_names = [name for name, matched in zip(
@@ -67,10 +54,10 @@ def get_value_from_names(names):
     values = {
         "Manuel L. Quezon": 20,
         "Sergio Osmena": 50,
-        "Manuel A. Roxas": 100,
+        "Manuel Roxas": 100,
         "Diosdado P. Macapagal": 200,
-        "Corazon C. Aquino": 500,
-        "Benigno S. Aquino Jr": 500,
+        "Corazon Aquino": 500,
+        "Benigno Aquino Jr": 500,
         "Jose Abad Santos": 1000,
         "Vicente Lim": 1000,
         "Josefa Llanes Escoda": 1000
@@ -132,5 +119,6 @@ def show_bill(image, boxes, names, value):
     cv2.putText(image, f"Value: {value}", (50, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-    cv2.imshow("", image)
+    cv2.namedWindow("show bill", cv2.WINDOW_NORMAL)
+    cv2.imshow("show bill", image)
     cv2.waitKey()
