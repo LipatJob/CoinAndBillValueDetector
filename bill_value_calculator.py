@@ -17,7 +17,7 @@ def get_bill_value(bill_image, pre_encoded_faces, cuda_available=False, debug_mo
     if debug_mode:
         show_bill(small_frame, boxes, names, value)
 
-    return value
+    return value, boxes, names
 
 
 def match_face_names(bill, pre_encoded_faces, cuda_available):

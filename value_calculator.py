@@ -10,7 +10,7 @@ from debug_utils import resize_image
 
 
 class ValueCalculator:
-    def __init__(self, cuda_available = False):
+    def __init__(self, cuda_available=False):
         if cuda_available:
             print("Using CUDA")
         self.pixel_per_metric = None
@@ -29,25 +29,27 @@ class ValueCalculator:
             if debug_mode:
                 cv2.imshow("", resize_image(item, 300))
                 cv2.waitKey()
+            bill_boxes = []
+            bill_names = []
 
             # process coins
             if money_type == "coin":
-                if self.pixel_per_metric == None:
-                    self.pixel_per_metric = get_pixel_per_metric(box)
+                if self.pixel_per_metric == None: self.pixel_per_metric = get_pixel_per_metric(box)
                 value = get_coin_value(box, self.pixel_per_metric, debug_mode, item)
 
             # process bills
             if money_type == "bill":
                 if self.pre_encoded_faces == None:
                     self.pre_encoded_faces = get_encoded_bills(cuda_available = self.cuda_available)
-                    
-                value = get_bill_value(item, self.pre_encoded_faces, self.cuda_available, debug_mode)
+                value, bill_boxes, bill_names = get_bill_value(item, self.pre_encoded_faces, self.cuda_available, debug_mode)
+                
 
             # add value to list
             values.append({
                 "type": money_type,
                 "value": value,
-                "location": tuple(map(tuple, box))
+                "location": tuple(map(tuple, box)),
+                "names": bill_names
             })
 
         return values
