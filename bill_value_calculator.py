@@ -1,8 +1,6 @@
 import cv2
 import face_recognition
 import numpy as np
-import pytesseract
-
 from debug_utils import draw_bounding_box
 
 
@@ -30,6 +28,7 @@ def apply_preprocess(bill):
     rgb_small_frame = small_frame[:, :, ::-1]
 
     return rgb_small_frame
+
 
 def match_face_names(bill, pre_encoded_faces, cuda_available):
     bill = bill.copy()

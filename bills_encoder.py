@@ -19,7 +19,7 @@ def get_encoded_bills(re_encode = False, cuda_available=False):
     return encode_and_save(input_folder_location, output_file_location, use_cnn=cuda_available)
 
 
-def encode_and_save(input_folder_location, output_file_location, use_cnn=True):
+def encode_and_save(input_folder_location, output_file_location, use_cnn=False):
     encoded = encode_directory(input_folder_location, use_cnn)
     pickle_object(encoded, output_file_location)
     return encoded
@@ -86,3 +86,4 @@ def get_encoded(file_location):
     # Add additional validation if needed
 
     return pickle.loads(file_content)
+

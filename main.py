@@ -22,7 +22,7 @@ def main():
         print("Value:", get_value_from_image(location))
 
 
-def get_value_from_image(image_location):
+def get_value_from_image(image_location, debug_mode = False):
     img = cv2.imread(image_location)
     original_img = img.copy()
 
@@ -30,7 +30,7 @@ def get_value_from_image(image_location):
     value_calculator = ValueCalculator()
 
     img = apply_preprocess(img)
-    values = value_calculator.get_values(img, True)
+    values = value_calculator.get_values(img, debug_mode)
 
     display_values(values, original_img)
 
@@ -84,6 +84,3 @@ def display_values(values, image):
 
     cv2.imshow("", image)
     cv2.waitKey()
-
-
-main()
