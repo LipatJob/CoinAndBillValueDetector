@@ -9,7 +9,7 @@ from debug_utils import draw_bounding_box
 def get_bill_value(bill_image, pre_encoded_faces, cuda_available = False, debug_mode = False):
     bill_image = apply_preprocess(bill_image)
     boxes, names = match_face_names(bill_image, pre_encoded_faces, cuda_available)
-    value = get_bill_value(names)
+    value = get_value_from_names(names)
 
     if debug_mode:
         show_bill(bill_image, boxes, names, value)
@@ -61,15 +61,15 @@ def match_face_names(bill, pre_encoded_faces, cuda_available):
     return boxes, names
 
 
-def get_bill_value(names):
+def get_value_from_names(names):
     values = {
         "Manuel L. Quezon": 20,
-        "Sergio Osmeña": 50,
+        "Sergio Osmena": 50,
         "Manuel A. Roxas": 100,
         "Diosdado P. Macapagal": 200,
         "Corazon C. Aquino": 500,
         "Benigno S. Aquino Jr": 500,
-        "José Abad Santos": 1000,
+        "Jose Abad Santos": 1000,
         "Vicente Lim": 1000,
         "Josefa Llanes Escoda": 1000
     }

@@ -32,9 +32,13 @@ def encode_directory(folder_location, use_cnn=False):
 
     encodings = []
     if use_cnn:
-        encodings = map(encode_image_cnn, images)
+        for image, path in zip(images, imagePaths):
+            print(f"Encoding {path}")
+            encodings.append(encode_image_cnn(image))
     else:
-        encodings = map(encode_image, images)
+        for image, path in zip(images, imagePaths):
+            print(f"Encoding {path}")
+            encodings.append(encode_image(image))
 
     known_names = []
     known_encodings = []

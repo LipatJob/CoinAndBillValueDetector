@@ -9,12 +9,13 @@ def main():
 
     # Uncomment pictures to be processed
     IMAGE_LOCATION = [
-        # "examples/coins.jpg",
-        # "examples/bills.jpg",
-        "examples/coins_bills.jpg",
-        # "examples/rotated_bills.png",
-        # "examples/other_bills.jpg",
-        # "pic.jpg"
+        # "test/examples/coins.jpg",
+        # "test/examples/bills.jpg",
+        # "test/examples/coins_bills.jpg",
+        # "test/examples/rotated_bills.png",
+        # "test/examples/other_bills.jpg",
+        # "test/pic.jpg"
+        "test/examples/100 Pesos/1.jpg",
     ]
 
     for location in IMAGE_LOCATION:
