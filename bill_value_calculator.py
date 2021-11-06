@@ -1,12 +1,13 @@
 import cv2
 import face_recognition
 import numpy as np
-from debug_utils import draw_bounding_box
+from debug_utils import draw_bounding_box, resize_image
 
 
-def get_bill_value(bill_image, pre_encoded_faces, cuda_available = False, debug_mode = False):
+def get_bill_value(bill_image, pre_encoded_faces, cuda_available=False, debug_mode=False):
     bill_image = apply_preprocess(bill_image)
-    boxes, names = match_face_names(bill_image, pre_encoded_faces, cuda_available)
+    boxes, names = match_face_names(
+        bill_image, pre_encoded_faces, cuda_available)
     value = get_value_from_names(names)
 
     if debug_mode:
@@ -16,6 +17,8 @@ def get_bill_value(bill_image, pre_encoded_faces, cuda_available = False, debug_
 
 
 def apply_preprocess(bill):
+    bill = cv2.cvtColor(bill, cv2.COLOR_BGR2RGB)
+
     # Apply Gaussian Blur and Median Blur
     bill = cv2.normalize(bill, bill, 0, 255, cv2.NORM_MINMAX)
     gauss_img = cv2.GaussianBlur(bill, (5, 5), 0)
@@ -34,8 +37,8 @@ def match_face_names(bill, pre_encoded_faces, cuda_available):
     bill = bill.copy()
     model = "cnn" if cuda_available else "hog"
     boxes = face_recognition.face_locations(bill, model=model)
-    encodings = face_recognition.face_encodings(bill, boxes, model="small")
-    
+    encodings = face_recognition.face_encodings(bill, boxes)
+
     # initialize the list of names for each face detected
     names = []
     for encoding in encodings:
@@ -77,7 +80,7 @@ def get_value_from_names(names):
         if name in values:
             return values[name]
 
-    return -1        
+    return -1
 
 
 def get_int_value(value):
@@ -91,6 +94,7 @@ def get_int_value(value):
     }
 
     return int_values.get(value, None)
+
 
 def get_value_of_names(names):
     values = {
@@ -120,16 +124,10 @@ def show_bill(image, boxes, names, value):
     # helper function for displaying the bill after processing
     image = image.copy()
 
-    factor = 150
-    ratio = image.shape[1] / image.shape[0]
-    width = int(factor)
-    height = int(factor * ratio)
-
-    image = cv2.resize(image, (height, width))
-
     for box, name in zip(boxes, names):
-        left, top, right, bottom = box
-        draw_bounding_box(image, name, left, top, right, bottom, (255, 0, 0), (255, 0, 0))
+        top, right, bottom, left = box
+        draw_bounding_box(image, name, left, top, right,
+                          bottom, (255, 0, 0), (255, 0, 0))
 
     cv2.putText(image, f"Value: {value}", (50, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
