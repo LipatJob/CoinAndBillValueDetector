@@ -13,7 +13,7 @@ def get_bill_value(bill_image, pre_encoded_faces, cuda_available=False, debug_mo
     if debug_mode:
         show_bill(bill_image, boxes, names, value)
 
-    return value
+    return value, boxes, names
 
 
 def apply_preprocess(bill):
