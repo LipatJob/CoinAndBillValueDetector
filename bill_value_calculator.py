@@ -3,15 +3,16 @@ import face_recognition
 import numpy as np
 import pytesseract
 
+from debug_utils import draw_bounding_box
+
 
 def get_bill_value(bill_image, pre_encoded_faces, cuda_available = False, debug_mode = False):
     bill_image = apply_preprocess(bill_image)
-    boxes, value = match_face_and_value(bill_image, pre_encoded_faces, cuda_available)
-
-    value = get_int_value(value)
+    boxes, names = match_face_names(bill_image, pre_encoded_faces, cuda_available)
+    value = get_bill_value(names)
 
     if debug_mode:
-        show_bill(bill_image, boxes, value)
+        show_bill(bill_image, boxes, names, value)
 
     return value
 
@@ -30,8 +31,7 @@ def apply_preprocess(bill):
 
     return rgb_small_frame
 
-
-def match_face_and_value(bill, pre_encoded_faces, cuda_available):
+def match_face_names(bill, pre_encoded_faces, cuda_available):
     bill = bill.copy()
     model = "cnn" if cuda_available else "hog"
     boxes = face_recognition.face_locations(bill, model=model)
@@ -39,7 +39,6 @@ def match_face_and_value(bill, pre_encoded_faces, cuda_available):
     
     # initialize the list of names for each face detected
     names = []
-
     for encoding in encodings:
         # attempt to match each face in the input image to our known encodings
         matches = face_recognition.compare_faces(
@@ -59,13 +58,27 @@ def match_face_and_value(bill, pre_encoded_faces, cuda_available):
         # add the name to the list of matched names
         names.append(name)
 
-    name_count = {name:names.count(name) for name in set(names)}
+    return boxes, names
 
-    if len(name_count) == 0:
-        return boxes, 'null'
 
-    max_name_count = max(name_count, key=name_count.get)
-    return boxes, max_name_count
+def get_bill_value(names):
+    values = {
+        "Manuel L. Quezon": 20,
+        "Sergio Osmeña": 50,
+        "Manuel A. Roxas": 100,
+        "Diosdado P. Macapagal": 200,
+        "Corazon C. Aquino": 500,
+        "Benigno S. Aquino Jr": 500,
+        "José Abad Santos": 1000,
+        "Vicente Lim": 1000,
+        "Josefa Llanes Escoda": 1000
+    }
+
+    for name in names:
+        if name in values:
+            return values[name]
+
+    return -1        
 
 
 def get_int_value(value):
@@ -104,7 +117,7 @@ def get_value_of_names(names):
     return value
 
 
-def show_bill(image, boxes, value):
+def show_bill(image, boxes, names, value):
     # helper function for displaying the bill after processing
     image = image.copy()
 
@@ -114,6 +127,11 @@ def show_bill(image, boxes, value):
     height = int(factor * ratio)
 
     image = cv2.resize(image, (height, width))
+
+    for box, name in zip(boxes, names):
+        left, top, right, bottom = box
+        draw_bounding_box(image, name, left, top, right, bottom, (255, 0, 0), (255, 0, 0))
+
     cv2.putText(image, f"Value: {value}", (50, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
