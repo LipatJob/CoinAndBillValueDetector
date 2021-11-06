@@ -87,3 +87,4 @@ def get_encoded(file_location):
 
     return pickle.loads(file_content)
 
+get_encoded_bills(True)

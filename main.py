@@ -19,7 +19,7 @@ def main():
     ]
 
     for location in IMAGE_LOCATION:
-        print("Value:", get_value_from_image(location))
+        print("Value:", get_value_from_image(location, True))
 
 
 def get_value_from_image(image_location, debug_mode = False):
