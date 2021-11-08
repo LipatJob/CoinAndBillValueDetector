@@ -7,7 +7,7 @@ from debug_utils import resize_image
 def get_coin_value(box, pixel_per_metric, debug_mode = False, debug_image = None):
     diameter = get_diameter(box, pixel_per_metric)
 
-    coin_value = "-1"
+    coin_value = "0"
     dimensions = [("1", 23), ("5", 25), ("10", 27)]
     epsilon = 1.3
     for current_type, size in dimensions:

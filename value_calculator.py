@@ -18,7 +18,7 @@ class ValueCalculator:
         self.cuda_available = cuda_available
 
     def get_values(self, image, debug_mode=False):
-        cnts = self.get_contours(image, debug_mode)
+        cnts = self.get_contours(image)
         money_types = [self.check_type(cnt) for cnt in cnts]
         min_areas = [cv2.minAreaRect(contour) for contour in cnts]
         boxes = [cv2.boxPoints(min_area) for min_area in min_areas]
@@ -61,16 +61,11 @@ class ValueCalculator:
 
         return image
 
-    def get_contours(self, image, debug_mode=False):
+    def get_contours(self, image):
         image = image.copy()
         image = self.apply_preprocess(image)
         thresh = cv2.threshold(
             image, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
-
-        if debug_mode:
-            cv2.namedWindow("threshold", cv2.WINDOW_NORMAL)
-            cv2.imshow("threshold", thresh)
-            cv2.waitKey()
 
         # get contours
         cnts = cv2.findContours(

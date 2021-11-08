@@ -67,7 +67,7 @@ def get_value_from_names(names):
         if name in values:
             return values[name]
 
-    return -1
+    return 0
 
 
 def get_int_value(value):
@@ -122,3 +122,4 @@ def show_bill(image, boxes, names, value):
     cv2.namedWindow("show bill", cv2.WINDOW_NORMAL)
     cv2.imshow("show bill", image)
     cv2.waitKey()
+    cv2.destroyAllWindows()

@@ -6,7 +6,7 @@ class BillsTest(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(BillsTest, self).__init__(*args, **kwargs)
-        self.debug_mode = False
+        self.debug_mode = True
 
     def test_20(self):
         self.assertEqual(get_value_from_image(

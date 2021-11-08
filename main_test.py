@@ -7,7 +7,7 @@ class MainTest(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(MainTest, self).__init__(*args, **kwargs)
-        self.debug_mode = False
+        self.debug_mode = True
 
     def test_coins(self):
         self.assertEqual(get_value_from_image(
