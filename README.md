@@ -13,3 +13,9 @@ There is also the dataset folder which contains the data that we use for encodin
 The video folder also contains the input videos and the resulting videos after applying face recognition.
 
 The model folder just contains the encoded faces and labels.
+
+value_calculator.py contains the logic for calculating the total value of money in an image. It also determines whether it is a coin or a bill and it also does some preprocessing.
+
+coin_value_calculator.py contains the logic for getting the value of a coin. It calculates the diameter of the contour of the coin to do this.
+
+bill_value_calculator.py contains the logic for getting the value of a bill. It uses face recognition to do this.
