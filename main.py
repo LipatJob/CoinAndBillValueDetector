@@ -87,7 +87,6 @@ def display_values(values, image):
     image = cv2.resize(image, (width, height))
 
     cv2.imshow("", image)
-    cv2.waitKey()
 
 
 if __name__ == "__main__":
