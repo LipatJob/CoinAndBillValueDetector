@@ -33,6 +33,7 @@ def get_value_from_image(image_location, debug_mode = False):
     values = value_calculator.get_values(img, debug_mode)
 
     display_values(values, original_img)
+    print("Value:", calculate_total(values))
 
     return calculate_total(values)
 
