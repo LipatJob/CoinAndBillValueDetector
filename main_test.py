@@ -5,12 +5,13 @@ from main import get_value_from_image
 
 class MainTest(unittest.TestCase):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super(MainTest, self).__init__(*args, **kwargs)
         self.debug_mode = False
 
     def test_coins(self):
         self.assertEqual(get_value_from_image(
-            "tests/dataset/coins.jpg", self.debug_mode), 22)
+            "tests/dataset/examples/coins.jpg", self.debug_mode), 22)
 
     def test_bills(self):
         self.assertEqual(get_value_from_image(
@@ -32,3 +33,5 @@ class MainTest(unittest.TestCase):
         self.assertEqual(get_value_from_image(
             "tests/dataset/examples/pic.jpg", self.debug_mode), 187)
 
+if __name__ == '__main__':
+    unittest.main()
