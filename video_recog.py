@@ -31,6 +31,7 @@ def main():
         if ret == True:
             if current_frame % frame_rate == 0:
                 values = value_calculator.get_values(frame)
+                print("Current Value:", calculate_total(values))
 
             display_values(values, frame)
 
@@ -48,6 +49,13 @@ def main():
     
     cap.release()
     cv2.destroyAllWindows()
+
+def calculate_total(values):
+    total = 0
+    for value in values:
+        total += int(value["value"])
+    return total
+
 
 
 
