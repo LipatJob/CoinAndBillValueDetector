@@ -1,6 +1,6 @@
 This is a short guide on how our project is structured. 
 
-To detect the value of money in an image, see main.py. You may uncomment items in the IMAGE_LOCATION array to test out different images.
+To detect the value of money in an image, see main.py. You may uncomment items in the IMAGE_LOCATION array to test out different images. You could also set DEBUG_MODE to false when you don't want to see coins and bills being processed one by one.
 
 To detect the value of money in a video, see video_recog.py. You may change the value of INPUT_VIDEO_LOCATION to select a different video. You can change where the output video is located by changing OUTPUT_VIDEO_LOCATION
 

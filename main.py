@@ -1,5 +1,5 @@
 import cv2
-from debug_utils import draw_bounding_box
+from debug_utils import draw_bounding_box, resize_image
 from value_calculator import ValueCalculator
 import pprint
 import numpy as np
@@ -12,15 +12,22 @@ def main():
     IMAGE_LOCATION = [
         # "tests/dataset/examples/coins.jpg",
         # "tests/dataset/examples/bills.jpg",
-        #"tests/dataset/examples/coins_bills.jpg",
+        # "tests/dataset/examples/coins_bills.jpg",
         # "tests/dataset/examples/rotated_bills.png",
         # "tests/dataset/examples/other_bills.jpg",
         # "tests/dataset/pic.jpg"
         "tests/dataset/examples/1000 Pesos/1.jpg",
+        # "tests/dataset/examples/500 Pesos/1.jpg",
+        # "tests/dataset/examples/100 Pesos/1.jpg",
+        # "tests/dataset/examples/50 Pesos/1.jpg",
+        # "tests/dataset/examples/20 Pesos/1.jpg",
     ]
+    
+    # Set this to false when you don't want to see the coins and bills being processed one by one
+    DEBUG_MODE = True
 
     for location in IMAGE_LOCATION:
-        print("Value:", get_value_from_image(location, True))
+        get_value_from_image(location, DEBUG_MODE)
 
 
 def get_value_from_image(image_location, debug_mode = False):
@@ -46,12 +53,7 @@ def calculate_total(values):
 
 
 def display_image(image):
-    factor = 700
-    ratio = image.shape[0] / image.shape[1]
-    width = int(factor)
-    height = int(factor * ratio)
-
-    image = cv2.resize(image, (width, height))
+    image = resize_image(image, 700)
 
     cv2.imshow("", image)
     cv2.waitKey()
@@ -78,12 +80,7 @@ def display_values(values, image):
             names = ", ".join(value["names"])
             cv2.putText(image, names, names_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
             
-    factor = 700
-    ratio = image.shape[0] / image.shape[1]
-    width = int(factor)
-    height = int(factor * ratio)
-
-    image = cv2.resize(image, (width, height))
+    image = resize_image(image, 700)
 
     cv2.imshow("", image)
     cv2.waitKey()
