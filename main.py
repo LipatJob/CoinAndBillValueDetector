@@ -12,11 +12,11 @@ def main():
     IMAGE_LOCATION = [
         # "tests/dataset/examples/coins.jpg",
         # "tests/dataset/examples/bills.jpg",
-        # "tests/dataset/examples/coins_bills.jpg",
+        #"tests/dataset/examples/coins_bills.jpg",
         # "tests/dataset/examples/rotated_bills.png",
-         "tests/dataset/examples/other_bills.jpg",
+        # "tests/dataset/examples/other_bills.jpg",
         # "tests/dataset/pic.jpg"
-        # "tests/dataset/examples/500 Pesos/1.jpg",
+        "tests/dataset/examples/1000 Pesos/1.jpg",
     ]
 
     for location in IMAGE_LOCATION:
@@ -77,8 +77,6 @@ def display_values(values, image):
             names = ", ".join(value["names"])
             cv2.putText(image, names, names_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
             
-
-
     factor = 700
     ratio = image.shape[0] / image.shape[1]
     width = int(factor)
@@ -87,6 +85,7 @@ def display_values(values, image):
     image = cv2.resize(image, (width, height))
 
     cv2.imshow("", image)
+    cv2.waitKey()
 
 
 if __name__ == "__main__":

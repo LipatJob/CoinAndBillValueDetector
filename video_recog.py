@@ -6,12 +6,12 @@ import numpy as np
 from time import sleep
 import dlib
 
-dlib.DLIB_USE_CUDA
-
 def main():
-    VIDEO_LOCATION = "test2.mp4"
+    INPUT_VIDEO_LOCATION = "test2.mp4"
+    OUTPUT_VIDEO_LOCATION = "videos/output.mp4"
+    
 
-    cap = cv2.VideoCapture(VIDEO_LOCATION)
+    cap = cv2.VideoCapture(INPUT_VIDEO_LOCATION)
 
     print("CUDA enabled:", dlib.DLIB_USE_CUDA)
 
@@ -20,7 +20,7 @@ def main():
     frame_height = int(cap.get(4))
     frame_size = (frame_width, frame_height)
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter("videos/output.mp4", fourcc, frame_rate, frame_size, True)
+    writer = cv2.VideoWriter(OUTPUT_VIDEO_LOCATION, fourcc, frame_rate, frame_size, True)
 
     value_calculator = ValueCalculator(cuda_available=True)
 

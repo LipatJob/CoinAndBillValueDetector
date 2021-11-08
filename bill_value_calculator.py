@@ -119,6 +119,5 @@ def show_bill(image, boxes, names, value):
     cv2.putText(image, f"Value: {value}", (50, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-    cv2.namedWindow("show bill", cv2.WINDOW_NORMAL)
     cv2.imshow("show bill", image)
     cv2.waitKey()
